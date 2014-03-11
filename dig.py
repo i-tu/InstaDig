@@ -13,17 +13,21 @@ tag = sys.argv[1]
 nextID = ''
 
 while True:
-    recent_media, next = api.tag_recent_media(20, nextID, tag)
+    recent_media, next = api.tag_recent_media(25, nextID, tag)
     nextID = next.split('=')[-1]
     print 'found ' + str(len(recent_media)) + ' new items'
 
     for media in recent_media:
-        name = str(media).replace('Media: ','') + '.jpg'
+        name = str(media).replace('Media: ','')
         print 'downloading ' + name
+        
+        jsonOutput = open(name + '.json', 'wb')
+        jsonOutput.write(str(vars(media)))
+        jsonOutput.close()
 
         nextfile = urllib2.urlopen(media.images['standard_resolution'].url)
-        output = open(name, 'wb')
-        output.write(nextfile.read())
-        output.close()
-
+        imgOutput = open(name + '.jpg', 'wb')
+        imgOutput.write(nextfile.read())
+        imgOutput.close()
+    
     print 'calling with nextID: ' + nextID
