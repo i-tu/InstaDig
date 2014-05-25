@@ -13,13 +13,11 @@ api = client.InstagramAPI(**CONFIG)
 tag = sys.argv[1]
 nextID = sys.argv[2]
 
-def dot():
-    print ".",
+downloads = 0
+download_max = 1500
 
-time.sleep(1)
-
-while True:
-
+while downloads < download_max:
+    print 'downloaded ' + str(downloads) + '/' + str(download_max)
     tries = 0
 
     while tries < 3:
@@ -35,7 +33,7 @@ while True:
     print 'found ' + str(len(recent_media)) + ' new items'
 
     for media in recent_media:
-
+        
         name = str(media).replace('Media: ','')
         
         print 'downloading ' + name
@@ -56,5 +54,7 @@ while True:
         imgOutput = open(name + '.jpg', 'wb')
         imgOutput.write(nextfile.read())
         imgOutput.close()
-
+        
+        downloads = downloads + 1
+    
     print 'calling with nextID: ' + nextID

@@ -7,12 +7,17 @@ var tag_name = 'helsinki';
 
 // Your client id (given by instagram api)
 var client_id = '5b8ae8f010d64112a48f969b6af736d5';
+
 var thumb_dimension = 220;
-var div_to_add_pics = '#img';
+
+var div_to_add_pics = '#holder';
 // Include Instagram caption with image?
 var include_caption = false;
 // Include Instagram username with image?
 var include_username = false;
+
+var window_width;
+
 
 var url = 'https://api.instagram.com/v1/tags/'+tag_name+'/media/recent?client_id='+client_id;
 
@@ -36,40 +41,15 @@ function LoadResults(){
 // as a <li>
 function ProcessData(response){
 	if(response != null){
-		var row = $('<div/>');
-	    row.attr({'class': "row"});
-
 		$(response.data).each(function(index,obj){
-			if(index == 20)
-				return response.pagination.next_url;
-			var link = $('<a/>');
-                image = $('<img/>');
-                col = $('<div/>');
+            var items = "<a href ='"+obj.link+ "'><img src = '" + obj.images.thumbnail.url + "' class='item'/></a>";
+            $(div_to_add_pics).prepend( $( items ) );
+            if(index == 20)
+    			return response.pagination.next_url;
+        });
 
-            col.attr({'class': 'col-lg-3'});
-            image.attr({'class': 'thumbnail'});
-			image.attr({'src': obj.images.low_resolution.url, // options: low_resolution (300 x 300)
-                                                              // standard_resolution (600 x 600)
-                                                              // thumbnail (150 x 150)
-        'width':thumb_dimension,'height': thumb_dimension});
-			link.attr('href',obj.link);
-			image.appendTo(link);
-			link.appendTo(col);
-			if(include_username){
-				$('<div class="username">'+obj.caption.from.username+'</div>').appendTo(li);
-			}
-			if(include_caption){
-				$('<div class="caption">'+obj.caption.text+'</div>').appendTo(li);
-			}
-			// Append the image (and text) to the list
-			row.append(col);
-		});
-		// Append the list to the given div
-		$(div_to_add_pics).append(row);
-		// make url correlate to the next set of data
-		url = response.pagination.next_url;
-
-	}
+        url = response.pagination.next_url;
+    }
 };
 
 /*********
@@ -98,15 +78,37 @@ function loadNext() {
 
     // Aaaaaand we're done loading.
     loadingImages = false;
-}
+    }
   
 }
-    
+ 
 /* When the user scrolls to the bottom of the page, load the next set
  * of images */
-$(window).scroll(function() {
-  var offset = 1000; // Change for distance to load
-  if($(window).scrollTop() + $(window).height() > $(document).height() - offset) {
-    loadNext();
-  }
-});
+
+var last_load = 0;
+
+var scrollDiv = function (dir, px) {
+    $(scroller).animate({
+        scrollLeft: go + px  // becomes '-=int' or '+=int' 
+    }, 500); // duration
+};
+
+function animateScroll(target, speed){
+    $(target).animate(
+        {
+            'top': $(window).scrollTop() + $(window).height()
+        },
+        {
+            duration: speed,
+            complete: function(){
+                animateScroll(this, speed);
+                loadNext();
+            }
+        }
+    );
+};
+
+animateScroll($('#holder'), 5000);
+
+var offset = 500; // Change for distance to load
+  
