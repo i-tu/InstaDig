@@ -4,9 +4,9 @@ import sys
 import time
 
 CONFIG = {
-    'client_id': '5b8ae8f010d64112a48f969b6af736d5',
-    'client_secret': '6cdf09f8c92644f68d6846000880752e',
-    'redirect_uri': 'http://localhost:8515/oauth_callback'
+    'client_id': '',
+    'client_secret': '',
+    'redirect_uri': ''
 }
 
 api = client.InstagramAPI(**CONFIG)
@@ -16,7 +16,7 @@ nextID = sys.argv[2]
 while True:
     try:
         tries = 0
-
+        
         while tries < 3:
             try:
                 recent_media, next = api.tag_recent_media(25, nextID, tag)
