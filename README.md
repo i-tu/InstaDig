@@ -2,9 +2,10 @@ InstaDig
 =========
 
 Download Instagram images and metadata by hashtag.
-To start: `python instadig.py justinbieber 0`
+To start:
 
 ```
+itu@home:~> python instadig.py justinbieber 0
 downloaded 0/1500
 found 25 new items
 downloading xcKsJ2Avv5
